@@ -2,657 +2,540 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Joel App Store - Neon Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore | Monospace Edition</title>
     <style>
-        /* --- GLOBAL & NEON VARIABLES --- */
         :root {
-            --cyan: #35eaff;
-            --pink: #ff0a6c;
-            --bg-main: #121214;
-            --bg-card: #1a1a24;
-            --text-main: #ffffff;
-            --text-sub: #888894;
-            --border-color: #2a2a35;
-            --font-mono: 'Fira Code', Consolas, 'Courier New', monospace;
-            --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --bg-dark: #0a0e17;
+            --bg-card: #151b2b;
+            --bg-input: #1e2638;
+            --primary-blue: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-yellow: #fbbf24;
+            --border-color: #2dd4bf33; /* Slight teal tint to borders */
+            --glow-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            font-family: var(--font-sans);
-            -webkit-font-smoothing: antialiased;
-            overflow: hidden; /* Prevents scrolling while on login screen */
-            transition: background-color 0.5s;
-        }
-
-        /* =========================================
-           LOGIN / SIGNUP SCREEN STYLES
-           ========================================= */
-        #login-view {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            background-color: var(--bg-main);
-            transition: opacity 0.6s ease, visibility 0.6s;
-        }
-
-        .login-box {
-            position: relative;
-            width: 180px;
-            height: 55px;
-            border-radius: 30px;
-            background: var(--bg-main);
-            transition: all 0.6s cubic-bezier(0.83, 0, 0.17, 1);
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
-            display: flex;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .login-box.expanded {
-            width: 350px;
-            height: 440px;
-            border-radius: 15px;
-            cursor: default;
-        }
-
-        .login-box::before {
-            content: "";
-            position: absolute;
-            inset: 50%;
-            width: 800px;
-            height: 800px;
-            translate: -50% -50%;
-            background: conic-gradient(
-                from 0deg,
-                transparent 0deg 36deg, var(--cyan) 36deg 48deg,
-                transparent 48deg 126deg, var(--pink) 126deg 138deg,
-                transparent 138deg 216deg, var(--cyan) 216deg 228deg,
-                transparent 228deg 306deg, var(--pink) 306deg 318deg,
-                transparent 318deg 360deg
-            );
-            filter: blur(1px);
-            animation: neon-rotate 5s linear infinite;
-        }
-
-        @keyframes neon-rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .inner-content {
-            position: absolute;
-            inset: 3px;
-            background: var(--bg-card);
-            border-radius: inherit;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px 30px;
-            box-sizing: border-box;
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            margin-top: 0px;
-            transition: all 0.5s ease;
-            height: 55px;
-            font-family: var(--font-mono);
-        }
-
-        .header .lock { color: var(--cyan); font-size: 14px; }
-        .header .dot { color: var(--pink); font-size: 20px; line-height: 0; }
-
-        .login-box.expanded .header {
-            margin-top: 15px;
-            margin-bottom: 25px;
-            height: auto;
-        }
-
-        .form-container {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            gap: 16px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-        }
-
-        .login-box.expanded .form-container.active-form {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-            transition-delay: 0.3s;
-        }
-
-        .form-container input {
-            background: var(--bg-main);
-            border: 1px solid var(--border-color);
-            padding: 14px 18px;
-            border-radius: 12px;
-            color: white;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            font-family: var(--font-mono);
-        }
-
-        .form-container input:focus {
-            border-color: var(--cyan);
-            box-shadow: 0 0 10px rgba(53, 234, 255, 0.2);
-        }
-
-        .form-container button {
-            background: var(--cyan);
-            color: var(--bg-main);
-            border: none;
-            padding: 14px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 5px;
-            transition: transform 0.2s, box-shadow 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-family: var(--font-mono);
-        }
-
-        .form-container button:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 15px rgba(53, 234, 255, 0.4);
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 5px;
-        }
-
-        .footer-links a { text-decoration: none; color: var(--text-sub); transition: color 0.3s; }
-        .footer-links a:hover { color: white; }
-        .footer-links a.signup { color: var(--pink); }
-        .footer-links a.signup:hover { color: #ff3b86; text-shadow: 0 0 8px var(--pink); }
-
-        /* =========================================
-           APP STORE STYLES (NEON THEME)
-           ========================================= */
-        #app-view {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-        }
-
-        /* Navigation Bar */
-        nav {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            background: rgba(18, 18, 20, 0.85);
-            backdrop-filter: blur(15px);
-            z-index: 100;
-        }
-
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            fill: var(--cyan);
-            margin-right: 15px;
-            cursor: pointer;
-            filter: drop-shadow(0 0 5px var(--cyan));
-        }
-
-        nav h1 {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            letter-spacing: 1px;
-            font-family: var(--font-mono);
+        /* Monospace Typography & Smooth Scroll */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace; 
         }
         
-        nav h1 span { color: var(--pink); }
-
-        /* Main Container */
-        main {
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .search-header {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            letter-spacing: -1px;
-            color: var(--cyan);
-            text-shadow: 0 0 10px rgba(53, 234, 255, 0.3);
-        }
-
-        /* Search Bar */
-        .search-bar-container { position: relative; margin-bottom: 30px; }
-        .search-bar-container svg {
-            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-            width: 18px; height: 18px; fill: var(--text-sub); transition: fill 0.3s;
-        }
-
-        #search-input {
-            width: 100%;
-            padding: 14px 14px 14px 42px;
-            font-size: 16px;
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            outline: none;
-            color: var(--text-main);
-            transition: all 0.3s ease;
-        }
-
-        #search-input:focus {
-            border-color: var(--pink);
-            box-shadow: 0 0 15px rgba(255, 10, 108, 0.2);
-        }
-
-        #search-input:focus + svg { fill: var(--pink); }
-        #search-input::placeholder { color: var(--text-sub); }
-
-        /* Discover Section */
-        #discover-section h2 { font-size: 20px; font-weight: 700; margin-bottom: 15px; color: white; }
-        .discover-tags { display: flex; flex-direction: column; gap: 10px; }
+        html { scroll-behavior: smooth; }
         
-        .tag {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-size: 16px;
-            color: var(--cyan);
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            padding-bottom: 80px; 
+            overflow-x: hidden; 
         }
 
-        .tag:hover {
-            border-color: var(--cyan);
-            box-shadow: 0 0 12px rgba(53, 234, 255, 0.15);
-            transform: translateX(5px);
+        /* Smooth Animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+
+        /* Glassmorphic Header */
+        header { 
+            position: sticky; 
+            top: 0; 
+            z-index: 50; 
+            padding: 15px 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            background: rgba(10, 14, 23, 0.7); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 20px;
         }
+        .logo-box { width: 45px; height: 45px; background: linear-gradient(135deg, #ffffff, #e2e8f0); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0f172a; font-weight: 900; font-size: 20px; box-shadow: var(--glow-shadow); }
+        .brand-text h1 { font-size: 18px; color: var(--primary-blue); line-height: 1.2; letter-spacing: -0.5px; }
+        .brand-text span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
 
-        .tag svg { width: 16px; height: 16px; margin-right: 10px; fill: var(--pink); }
-
-        /* App List Section */
-        #results-section { display: none; }
-        .app-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            transition: border-color 0.3s, box-shadow 0.3s;
+        /* Search & Categories */
+        .search-container { padding: 0 20px; margin-bottom: 20px; position: relative; }
+        .search-bar { 
+            width: 100%; background: var(--bg-input); border: 1px solid var(--border-color); 
+            padding: 14px 15px 14px 45px; border-radius: 12px; color: white; font-size: 14px; 
+            outline: none; transition: all 0.3s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E"); 
+            background-repeat: no-repeat; background-position: 15px center; 
         }
-
-        .app-item:hover {
-            border-color: var(--cyan);
-            box-shadow: 0 0 15px rgba(53, 234, 255, 0.1);
+        .search-bar:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); background-color: #151b2b; }
+        
+        .categories { display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 20px 20px; scrollbar-width: none; }
+        .categories::-webkit-scrollbar { display: none; }
+        .cat-pill { 
+            background: var(--bg-input); color: var(--text-muted); padding: 8px 18px; 
+            border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; 
+            cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease; 
         }
+        .cat-pill:hover { background: #232d45; transform: translateY(-2px); color: white; }
+        .cat-pill:active { transform: translateY(0); }
 
-        .app-icon {
-            width: 64px; height: 64px;
-            border-radius: 14px;
-            object-fit: cover;
-            margin-right: 15px;
-            background-color: var(--bg-main);
-            border: 1px solid var(--border-color);
+        /* App Grid - Smooth Hover Physics */
+        .app-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 0 20px; }
+        .app-card { 
+            background: var(--bg-card); border-radius: 16px; padding: 16px; text-align: center; 
+            position: relative; border: 1px solid rgba(255,255,255,0.05); display: flex; 
+            flex-direction: column; justify-content: space-between; cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .app-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .app-title {
-            font-size: 16px; font-weight: 700; color: white; margin-bottom: 4px;
+        .app-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 20px rgba(59,130,246,0.1);
         }
-        .app-subtitle { font-size: 13px; color: var(--text-sub); }
-
-        .app-action-btn {
-            background-color: transparent;
-            color: var(--cyan);
-            border: 1px solid var(--cyan);
-            border-radius: 20px;
-            padding: 7px 20px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-left: 10px;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            font-family: var(--font-mono);
+        .price-badge { position: absolute; top: 0; right: 0; background: rgba(16, 185, 129, 0.15); color: var(--accent-green); padding: 5px 12px; border-top-right-radius: 16px; border-bottom-left-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+        .app-icon { width: 75px; height: 75px; border-radius: 18px; margin: 12px auto; background: #fff; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: transform 0.3s ease; }
+        .app-card:hover .app-icon { transform: scale(1.05); }
+        .app-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
+        .app-author { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .app-category { font-size: 10px; color: var(--primary-blue); text-transform: uppercase; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.5px;}
+        
+        .card-actions { display: flex; gap: 8px; margin-top: auto; }
+        .btn-get { 
+            flex: 1; background: linear-gradient(135deg, var(--primary-blue), var(--primary-hover)); 
+            color: white; border: none; padding: 10px 0; border-radius: 10px; font-size: 13px; 
+            font-weight: 700; cursor: pointer; transition: all 0.2s ease; 
+            display: flex; justify-content: center; align-items: center; 
+            text-transform: uppercase; letter-spacing: 1px;
         }
+        .btn-get:hover:not(:disabled) { box-shadow: var(--glow-shadow); filter: brightness(1.1); }
+        .btn-get:active:not(:disabled) { transform: scale(0.96); }
+        .btn-get:disabled { opacity: 0.6; cursor: not-allowed; background: var(--bg-input); color: var(--text-muted); }
+        .btn-share { width: 40px; background: var(--bg-input); border: none; border-radius: 10px; color: white; cursor: pointer; transition: all 0.2s; }
+        .btn-share:hover { background: #2a344a; }
 
-        .app-action-btn:hover {
-            background-color: var(--cyan);
-            color: var(--bg-main);
-            box-shadow: 0 0 12px var(--cyan);
+        /* Status Messages */
+        .status-msg { text-align: center; padding: 40px 20px; color: var(--primary-blue); font-size: 14px; animation: fadeIn 0.5s ease; font-weight: 600; letter-spacing: 1px;}
+        .error-msg { color: var(--accent-red); }
+
+        /* Smooth Glass Modal */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: flex-end; /* Align to bottom for mobile feel */
+            z-index: 1000; padding: 15px; animation: fadeIn 0.3s ease; 
         }
-
-        .app-action-btn:active { transform: scale(0.95); }
-
-        .loader {
-            text-align: center; padding: 20px;
-            color: var(--pink); font-family: var(--font-mono); font-size: 14px;
-            display: none;
-            text-shadow: 0 0 8px rgba(255, 10, 108, 0.5);
-            animation: pulse 1s infinite alternate;
+        @media (min-width: 600px) { .modal-overlay { align-items: center; } } /* Center on desktop */
+        
+        .modal-content { 
+            background: var(--bg-dark); width: 100%; max-width: 450px; 
+            border-radius: 24px; padding: 25px; border: 1px solid rgba(255,255,255,0.1); 
+            position: relative; max-height: 90vh; overflow-y: auto; 
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
         }
+        .modal-content::-webkit-scrollbar { width: 6px; }
+        .modal-content::-webkit-scrollbar-thumb { background: var(--bg-input); border-radius: 10px; }
+        
+        .close-btn { position: absolute; top: 15px; right: 20px; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 14px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .close-btn:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
+        
+        .modal-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
+        .modal-icon { width: 85px; height: 85px; border-radius: 20px; background: #fff; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
+        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; word-break: break-word; line-height: 1.3;}
+        .modal-author { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+        .modal-cat { background: rgba(59, 130, 246, 0.15); color: var(--primary-blue); padding: 4px 10px; border-radius: 6px; font-size: 11px; display: inline-block; font-weight: 600; letter-spacing: 1px;}
+        .modal-desc { font-size: 13px; line-height: 1.6; color: #cbd5e1; margin: 25px 0; background: var(--bg-input); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);}
+        
+        .app-stats { display: flex; align-items: center; justify-content: space-between; font-size: 12px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05);}
+        .stars { color: var(--accent-yellow); letter-spacing: 2px;}
 
-        @keyframes pulse {
-            from { opacity: 0.5; }
-            to { opacity: 1; }
-        }
+        /* Reviews Section */
+        .reviews-section h3 { font-size: 14px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);}
+        .review-form { background: var(--bg-card); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.03); }
+        .review-form input, .review-form textarea { width: 100%; background: var(--bg-dark); border: 1px solid var(--bg-input); padding: 12px; border-radius: 10px; color: white; margin-bottom: 12px; font-size: 13px; transition: 0.3s; }
+        .review-form input:focus, .review-form textarea:focus { border-color: var(--primary-blue); outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+        .review-form textarea { resize: none; height: 80px; }
+        
+        .review-item { padding: 15px 0; border-bottom: 1px dashed var(--bg-input); animation: fadeIn 0.4s ease;}
+        .review-item:last-child { border-bottom: none; }
+        .review-user { font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; color: #fff;}
+        .review-date { color: var(--text-muted); font-size: 11px; font-weight: normal;}
+        .review-text { font-size: 13px; color: var(--text-muted); margin-top: 8px; line-height: 1.5;}
+
+        /* Developer Portal */
+        #dev-portal { display: none; padding: 20px; animation: fadeIn 0.4s ease;}
+        .portal-card { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 35px 25px; max-width: 420px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .portal-header { text-align: center; margin-bottom: 35px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-group input { width: 100%; background: var(--bg-input); border: 1px solid transparent; padding: 14px; border-radius: 12px; color: white; font-size: 14px; transition: 0.3s; }
+        .form-group input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); outline: none;}
+        .btn-submit { width: 100%; background: linear-gradient(135deg, var(--primary-blue), var(--primary-hover)); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
+        .btn-submit:hover { filter: brightness(1.1); box-shadow: var(--glow-shadow); }
+        .auth-switch { text-align: center; margin-top: 25px; font-size: 13px; color: var(--text-muted); }
+        .auth-switch span { color: var(--primary-blue); cursor: pointer; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+
+        /* Footer */
+        .footer-links { padding: 40px 20px; display: flex; flex-direction: column; gap: 15px; }
+        .footer-btn { background: var(--bg-card); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); padding: 14px; border-radius: 14px; text-align: center; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;}
+        .footer-btn:hover { background: var(--bg-input); color: #fff; transform: translateY(-2px); }
+        .copyright { text-align: center; color: var(--text-muted); font-size: 11px; margin-top: 15px; letter-spacing: 1px; }
+        .copyright span { color: var(--primary-blue); font-weight: 700;}
     </style>
 </head>
 <body>
 
-    <div id="login-view">
-        <div class="login-box" id="loginBox" onclick="expandLogin()">
-            <div class="inner-content">
-                <div class="header" id="auth-title">
-                    <span class="dot">•</span> LOGIN <span class="lock">🔒</span>
-                </div>
-                
-                <form class="form-container active-form" id="login-form" onsubmit="handleAuthSubmit(event)">
-                    <input type="text" placeholder="Username" required>
-                    <input type="password" placeholder="Password" required>
-                    <button type="submit">Access System</button>
-                    
-                    <div class="footer-links">
-                        <a href="#">Forgot Password</a>
-                        <a href="#" class="signup" onclick="toggleAuthMode(event, 'signup')">Sign up</a>
-                    </div>
-                </form>
+    <div id="store-view">
+        <header>
+            <div class="logo-box">JT</div>
+            <div class="brand-text">
+                <h1>TechStore</h1>
+                <span>Terminal_V2</span>
+            </div>
+        </header>
 
-                <form class="form-container" id="signup-form" onsubmit="handleAuthSubmit(event)" style="display: none;">
-                    <input type="text" placeholder="Username" required>
-                    <input type="email" placeholder="Email Address" required>
-                    <input type="password" placeholder="Password" required>
-                    <button type="submit">Create Account</button>
-                    
-                    <div class="footer-links">
-                        <a href="#" class="signup" onclick="toggleAuthMode(event, 'login')">Already registered?</a>
+        <div class="search-container">
+            <input type="text" id="search" class="search-bar" placeholder="> search_apps...">
+        </div>
+
+        <div class="categories" id="discover-section">
+            <div class="cat-pill" onclick="triggerSearch('tiktok')"># TikTok</div>
+            <div class="cat-pill" onclick="triggerSearch('whatsapp')"># WhatsApp</div>
+            <div class="cat-pill" onclick="triggerSearch('games')"># Games</div>
+            <div class="cat-pill" onclick="triggerSearch('tools')"># Tools</div>
+        </div>
+
+        <div id="loading" class="status-msg" style="display: none;">[ Processing request... ]</div>
+
+        <div id="apps-container">
+            <div class="app-grid" id="apps">
+                </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="app-modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeModal(event)">✕</button>
+            
+            <div class="modal-header">
+                <img id="modal-icon" src="" class="modal-icon" alt="Icon" onerror="this.src='https://via.placeholder.com/150'">
+                <div>
+                    <div class="modal-title" id="modal-title">App_Title.apk</div>
+                    <div class="modal-author" id="modal-author">> dev_unknown</div>
+                    <div class="modal-cat" id="modal-cat">CATEGORY</div>
+                </div>
+            </div>
+
+            <div class="app-stats">
+                <div>
+                    <span class="stars">★★★★★</span> <span style="color: var(--text-muted); margin-left:5px;">(4.8)</span>
+                </div>
+                <div style="color: var(--text-muted); font-weight: bold;">[ 10K+ DL ]</div>
+            </div>
+
+            <div class="card-actions" style="margin-bottom: 20px;">
+                <button class="btn-get" id="modal-dl-btn" style="font-size: 14px; padding: 14px 0;">> EXECUTE_DOWNLOAD</button>
+                <button class="btn-share" style="width: 50px;" onclick="alert('Share URL copied!')">🔗</button>
+            </div>
+
+            <div class="modal-desc">
+                <strong style="color: #fff; letter-spacing: 1px;">> sys_description:</strong><br><br>
+                Package retrieved successfully. Download the latest version securely via TechStore internal API.
+            </div>
+
+            <div class="reviews-section">
+                <h3>// User_Reviews (<span id="review-count">2</span>)</h3>
+                
+                <div class="review-form">
+                    <input type="text" id="reviewer-name" placeholder="> enter_username">
+                    <textarea id="review-text" placeholder="> enter_review_data..."></textarea>
+                    <button class="btn-get" style="width: max-content; padding: 10px 20px; font-size: 12px;" onclick="submitReview()">> PUSH_REVIEW</button>
+                </div>
+
+                <div id="reviews-list">
+                    <div class="review-item">
+                        <div class="review-user">
+                            <span>> root_user</span>
+                            <span class="review-date">Just now</span>
+                        </div>
+                        <div class="stars" style="margin-top: 5px; font-size: 11px;">★★★★★</div>
+                        <div class="review-text">Compilation successful. Works flawlessly.</div>
                     </div>
-                </form>
+                    <div class="review-item">
+                        <div class="review-user">
+                            <span>> guest_001</span>
+                            <span class="review-date">Yesterday</span>
+                        </div>
+                        <div class="stars" style="margin-top: 5px; font-size: 11px;">★★★★☆</div>
+                        <div class="review-text">Good execution speed. No bugs found.</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="app-view">
-        <nav>
-            <svg class="menu-icon" viewBox="0 0 24 24">
-                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-            </svg>
-            <h1>JOEL <span>APP STORE</span></h1>
-        </nav>
-
-        <main>
-            <h1 class="search-header">Search</h1>
-            
-            <div class="search-bar-container">
-                <input type="text" id="search-input" placeholder="Games, Apps, Stories..." autocomplete="off">
-                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+    <div id="dev-portal">
+        <div class="portal-header">
+            <div class="logo-box" style="margin: 0 auto 15px auto; width: 60px; height: 60px; font-size: 24px;">JT</div>
+            <div class="brand-text">
+                <h1 style="font-size: 24px; letter-spacing: -1px;">TechStore_Dev</h1>
+                <span style="font-size: 12px;">Authentication_Required</span>
             </div>
+        </div>
 
-            <section id="discover-section">
-                <h2>Discover</h2>
-                <div class="discover-tags">
-                    <div class="tag" onclick="triggerSearch('whatsapp')">
-                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                        whatsapp
-                    </div>
-                    <div class="tag" onclick="triggerSearch('live wallpaper')">
-                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                        live wallpaper
-                    </div>
-                    <div class="tag" onclick="triggerSearch('music player')">
-                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                        music player
-                    </div>
-                </div>
-            </section>
+        <div class="portal-card" id="login-form">
+            <div class="form-group">
+                <label>> dev_email</label>
+                <input type="email" id="login-email" placeholder="admin@techstore.local">
+            </div>
+            <div class="form-group">
+                <label>> sys_password</label>
+                <input type="password" id="login-pass" placeholder="********">
+            </div>
+            <button class="btn-submit" onclick="handleAuth('login')">> INIT_SESSION</button>
+            <div class="auth-switch">
+                No access credentials? <span onclick="toggleAuth()">Request Access</span>
+            </div>
+        </div>
 
-            <div id="loader" class="loader">Querying Network...</div>
-            <section id="results-section"></section>
-        </main>
+        <div class="portal-card" id="register-form" style="display: none;">
+            <div class="form-group">
+                <label>> dev_handle</label>
+                <input type="text" id="reg-user" placeholder="new_developer">
+            </div>
+            <div class="form-group">
+                <label>> email_address</label>
+                <input type="email" id="reg-email" placeholder="dev@domain.com">
+            </div>
+            <div class="form-group">
+                <label>> secure_key (pass)</label>
+                <input type="password" id="reg-pass" placeholder="Min 8 bytes">
+            </div>
+            <button class="btn-submit" onclick="handleAuth('register')">> CREATE_USER</button>
+            <div class="auth-switch">
+                Already registered? <span onclick="toggleAuth()">Init Session</span>
+            </div>
+        </div>
+        
+        <div class="portal-card" id="logged-in-view" style="display: none; text-align: center;">
+            <h2 style="margin-bottom: 15px; color: var(--primary-blue);">> Access_Granted</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 14px; line-height: 1.6;">Welcome to the Developer Dashboard. Server connection established securely.</p>
+            <button class="btn-submit" style="background: linear-gradient(135deg, #ef4444, #b91c1c);" onclick="logout()">> TERMINATE_SESSION</button>
+        </div>
+    </div>
+
+    <div class="footer-links">
+        <div class="footer-btn" onclick="togglePortal()">[ toggle_dev_portal ]</div>
+        <div class="copyright">
+            © 2026 <span>TECHSTORE</span> // BUILT BY <span>JOELJAMESTECH</span>
+        </div>
     </div>
 
     <script>
-        // --- AUTHENTICATION LOGIC ---
-        const loginBox = document.getElementById('loginBox');
-        let expanded = false;
+        // --- 1. API & Core Logic ---
+        const SEARCH_API = "https://api.qasimdev.dpdns.org/api/androidapk/search";
+        const DOWNLOAD_API = "https://api.qasimdev.dpdns.org/api/androidapk/download";
+        const KEY = "qasim-dev";
 
-        function expandLogin() {
-            if (!expanded) {
-                loginBox.classList.add('expanded');
-                expanded = true;
-            }
-        }
+        const appsBox = document.getElementById("apps");
+        const loading = document.getElementById("loading");
+        const search = document.getElementById("search");
+        const appsContainer = document.getElementById("apps-container");
 
-        // Auto-expand after 4 seconds
-        setTimeout(expandLogin, 4000);
-
-        function toggleAuthMode(event, mode) {
-            event.stopPropagation(); // Stop parent container triggers
-            const loginForm = document.getElementById('login-form');
-            const signupForm = document.getElementById('signup-form');
-            const authTitle = document.getElementById('auth-title');
-
-            if (mode === 'signup') {
-                loginForm.style.display = 'none';
-                loginForm.classList.remove('active-form');
-                
-                signupForm.style.display = 'flex';
-                setTimeout(() => signupForm.classList.add('active-form'), 50);
-                authTitle.innerHTML = '<span class="dot">•</span> SIGN UP <span class="lock">📝</span>';
-            } else {
-                signupForm.style.display = 'none';
-                signupForm.classList.remove('active-form');
-                
-                loginForm.style.display = 'flex';
-                setTimeout(() => loginForm.classList.add('active-form'), 50);
-                authTitle.innerHTML = '<span class="dot">•</span> LOGIN <span class="lock">🔒</span>';
-            }
-        }
-
-        function handleAuthSubmit(e) {
-            e.preventDefault(); 
-            
-            // Fade out current authorization screen
-            const loginView = document.getElementById('login-view');
-            loginView.style.opacity = '0';
-            
-            setTimeout(() => {
-                loginView.style.visibility = 'hidden';
-                loginView.style.display = 'none';
-                
-                // Unblock window scrolling and load store component
-                document.body.style.overflow = 'auto';
-                const appView = document.getElementById('app-view');
-                appView.style.display = 'block';
-                
-                setTimeout(() => {
-                    appView.style.opacity = '1';
-                }, 50);
-            }, 600); 
-        }
-
-        // --- APP STORE LOGIC WITH LIVE API INTEGRATION ---
-        const searchInput = document.getElementById('search-input');
-        const discoverSection = document.getElementById('discover-section');
-        const resultsSection = document.getElementById('results-section');
-        const loader = document.getElementById('loader');
-
-        let typingTimer;
-        searchInput.addEventListener('input', () => {
-            clearTimeout(typingTimer);
-            const query = searchInput.value.trim();
-            
-            if (query.length > 0) {
-                discoverSection.style.display = 'none';
-                resultsSection.style.display = 'none';
-                loader.style.display = 'block';
-                
-                typingTimer = setTimeout(() => fetchApps(query), 500);
-            } else {
-                discoverSection.style.display = 'block';
-                resultsSection.style.display = 'none';
-                loader.style.display = 'none';
-            }
-        });
-
-        function triggerSearch(term) {
-            searchInput.value = term;
-            searchInput.dispatchEvent(new Event('input'));
+        function triggerSearch(term) { 
+            search.value = term; 
+            fetchApps(term); 
         }
 
         async function fetchApps(query) {
+            if (!query) return;
+            appsContainer.style.display = "block";
+            loading.style.display = "block";
+            loading.className = "status-msg";
+            loading.innerHTML = "[ Fetching data packets... ]";
+            appsBox.innerHTML = "";
+
             try {
-                // Fetch direct pipeline from live APK downloader API endpoint matching requirements
-                const response = await fetch(`https://apis.davidcyril.name.ng/endpoints/download/apk?query=${encodeURIComponent(query)}`);
-                const data = await response.json();
+                let response = await fetch(`${SEARCH_API}?query=${encodeURIComponent(query)}&apiKey=${KEY}`);
+                let data = await response.json();
+                if(!data.success || !data.data.apps.length) throw "Error: 404_APPS_NOT_FOUND";
                 
-                if (data && data.status && data.apk) {
-                    const parsedApps = [{
-                        name: data.apk.name,
-                        subtitle: `Package: ${data.apk.package} | Updated: ${data.apk.lastUpdated}`,
-                        icon: data.apk.icon,
-                        downloadLink: data.apk.downloadLink
-                    }];
-                    renderApps(parsedApps);
-                } else {
-                    // Fallback to query generation array stream if keyword doesn't exactly match API data limits
-                    const standardApps = await mockApiCall(query);
-                    renderApps(standardApps);
-                }
-            } catch (error) {
-                console.warn("CORS limitation or direct endpoint pipeline failed. Deploying local data virtualization stream.");
-                const appsFallback = await mockApiCall(query); 
-                renderApps(appsFallback);
-            } finally {
-                loader.style.display = 'none';
-                resultsSection.style.display = 'block';
+                loading.style.display = "none";
+                displayApps(data.data.apps);
+            } catch(e) {
+                loading.innerHTML = `<span class="error-msg">[ ${e} ]</span>`;
             }
         }
 
-        function renderApps(apps) {
-            resultsSection.innerHTML = ''; 
-
-            if (apps.length === 0) {
-                resultsSection.innerHTML = `<p style="text-align:center; color: #888894;">No results found.</p>`;
-                return;
-            }
-
-            apps.forEach(app => {
-                const appItem = document.createElement('div');
-                appItem.className = 'app-item';
+        function displayApps(apps) {
+            apps.forEach((app, index) => {
+                let item = document.createElement("div");
+                item.className = "app-card";
                 
-                // Escape download URL string parameters cleanly
-                const appDownloadUrl = app.downloadLink || '#';
+                // Staggered fade in animation for list items
+                item.style.animation = `fadeIn 0.5s ease forwards ${index * 0.1}s`;
+                item.style.opacity = "0"; 
+                
+                item.onclick = () => openModal(app);
 
-                appItem.innerHTML = `
-                    <img src="${app.icon}" class="app-icon" alt="${app.name}">
-                    <div class="app-info">
-                        <div class="app-title">${app.name}</div>
-                        <div class="app-subtitle">${app.subtitle}</div>
+                item.innerHTML = `
+                    <div class="price-badge">FREE</div>
+                    <img src="${app.icon}" class="app-icon" onerror="this.src='https://via.placeholder.com/100?text=APK'">
+                    <div>
+                        <div class="app-title" title="${app.title}">${app.title}</div>
+                        <div class="app-author">> ${app.package || 'sys_dev'}</div>
+                        <div class="app-category">${app.category || 'APP_PKG'}</div>
                     </div>
-                    <button class="app-action-btn" onclick="downloadApp(event, '${appDownloadUrl}')">GET</button>
+                    <div class="card-actions">
+                        <button class="btn-get dl-btn">GET</button>
+                    </div>
                 `;
-                resultsSection.appendChild(appItem);
+
+                const dlBtn = item.querySelector(".dl-btn");
+                dlBtn.onclick = (e) => executeDownload(e, dlBtn, app);
+                
+                appsBox.appendChild(item);
             });
         }
 
-        async function downloadApp(event, url) {
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "WAIT";
-            btn.style.color = "var(--pink)";
-            btn.style.borderColor = "var(--pink)";
+        async function executeDownload(e, btnElement, app) {
+            if(e) e.stopPropagation(); 
+            
+            const originalText = btnElement.innerHTML;
+            btnElement.innerHTML = "WAIT..."; 
+            btnElement.disabled = true;
+            btnElement.style.animation = "pulseGlow 1.5s infinite";
             
             try {
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                btn.innerText = "DONE";
-                btn.style.backgroundColor = "var(--cyan)";
-                btn.style.color = "var(--bg-main)";
-                
-                if (url && url !== '#') {
-                    window.open(url, '_blank');
-                }
-            } catch (error) {
-                btn.innerText = "FAIL";
-                btn.style.color = "var(--pink)";
+                let res = await fetch(`${DOWNLOAD_API}?url=${encodeURIComponent(app.downloadUrl)}&apiKey=${KEY}`);
+                let json = await res.json();
+                let link = json.data?.downloadUrl || json.data?.url;
+                if (link) {
+                    const a = document.createElement("a"); 
+                    a.href = link; 
+                    a.download = `${app.title}.apk`;
+                    document.body.appendChild(a); 
+                    a.click(); 
+                    document.body.removeChild(a);
+                    
+                    btnElement.style.animation = "none";
+                    btnElement.innerHTML = "DONE";
+                    btnElement.style.background = "var(--accent-green)";
+                    
+                    setTimeout(() => { 
+                        btnElement.innerHTML = originalText; 
+                        btnElement.disabled = false; 
+                        btnElement.style.background = "";
+                    }, 3000);
+                } else throw "LINK_ERR";
+            } catch(err) {
+                btnElement.style.animation = "none";
+                btnElement.innerHTML = "ERR!"; 
+                btnElement.style.background = "var(--accent-red)";
+                setTimeout(() => { 
+                    btnElement.innerHTML = originalText; 
+                    btnElement.style.background = ""; 
+                    btnElement.disabled = false; 
+                }, 3000);
             }
-            
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style = "";
-            }, 2500);
         }
 
-        function mockApiCall(query) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve([
-                        { 
-                            name: "WhatsApp Messenger", 
-                            subtitle: "Package: com.whatsapp | Updated: 2.23.8.78", 
-                            icon: "https://pool.img.aptoide.com/mark8/1227f7edc0704ff99f73e0425d85ab5d_icon.png",
-                            downloadLink: "https://pool.apk.aptoide.com/mark8/com-whatsapp-230878003-64886827-266c915797653ac2c391cd69c543fada.apk"
-                        },
-                        { 
-                            name: "Photoroom: AI Photo", 
-                            subtitle: "Erase backgrounds, edit images", 
-                            icon: "https://ui-avatars.com/api/?name=P&background=ff0a6c&color=fff&size=128&rounded=true",
-                            downloadLink: "#"
-                        },
-                        { 
-                            name: "InPulse Tracker", 
-                            subtitle: "Log Blood Pressure & Oxygen", 
-                            icon: "https://ui-avatars.com/api/?name=I&background=35eaff&color=121214&size=128&rounded=true",
-                            downloadLink: "#"
-                        },
-                        { 
-                            name: `Stream Matrix: "${query}"`, 
-                            subtitle: "Realtime engine data link verified", 
-                            icon: "https://ui-avatars.com/api/?name=R&background=ff0a6c&color=fff&size=128&rounded=true",
-                            downloadLink: "#"
-                        }
-                    ]);
-                }, 600); 
-            });
+        search.addEventListener("keyup", (e) => { 
+            if(e.key === 'Enter' && search.value.length > 2) fetchApps(search.value); 
+        });
+
+        window.onload = () => triggerSearch("whatsapp");
+
+        // --- 2. Modal & Reviews Logic ---
+        function openModal(app) {
+            document.body.style.overflow = 'hidden'; // Prevent bg scrolling
+            
+            document.getElementById('modal-icon').src = app.icon;
+            document.getElementById('modal-title').innerText = app.title;
+            document.getElementById('modal-author').innerText = `> dev: ${app.package || 'unknown'}`;
+            document.getElementById('modal-cat').innerText = app.category || 'SYS_APP';
+
+            const modalDlBtn = document.getElementById('modal-dl-btn');
+            const newDlBtn = modalDlBtn.cloneNode(true); 
+            modalDlBtn.parentNode.replaceChild(newDlBtn, modalDlBtn);
+            
+            newDlBtn.onclick = (e) => executeDownload(e, newDlBtn, app);
+
+            document.getElementById('app-modal').style.display = 'flex';
+        }
+
+        function closeModal(e) {
+            if(e) e.stopPropagation();
+            document.body.style.overflow = 'auto'; // Restore scrolling
+            document.getElementById('app-modal').style.display = 'none';
+        }
+
+        function submitReview() {
+            const nameInput = document.getElementById('reviewer-name');
+            const textInput = document.getElementById('review-text');
+            
+            if(!nameInput.value.trim() || !textInput.value.trim()) {
+                return alert("Sys_Warning: Missing parameters (name, text).");
+            }
+
+            const newReviewHTML = `
+                <div class="review-item" style="border-bottom: 1px dashed var(--bg-input);">
+                    <div class="review-user">
+                        <span style="color: var(--primary-blue);">> ${nameInput.value}</span>
+                        <span class="review-date">Just now</span>
+                    </div>
+                    <div class="stars" style="margin-top: 5px; font-size: 11px;">★★★★★</div>
+                    <div class="review-text">${textInput.value}</div>
+                </div>
+            `;
+            
+            document.getElementById('reviews-list').insertAdjacentHTML('afterbegin', newReviewHTML);
+            
+            const countSpan = document.getElementById('review-count');
+            countSpan.innerText = parseInt(countSpan.innerText) + 1;
+            
+            nameInput.value = ''; textInput.value = '';
+        }
+
+        // --- 3. Authentication & UI Toggles ---
+        let isPortal = false;
+        function togglePortal() {
+            isPortal = !isPortal;
+            document.getElementById('store-view').style.display = isPortal ? 'none' : 'block';
+            document.getElementById('dev-portal').style.display = isPortal ? 'block' : 'none';
+            window.scrollTo(0,0);
+        }
+
+        let isLogin = true;
+        function toggleAuth() {
+            isLogin = !isLogin;
+            document.getElementById('login-form').style.display = isLogin ? 'block' : 'none';
+            document.getElementById('register-form').style.display = isLogin ? 'none' : 'block';
+        }
+
+        function handleAuth(type) {
+            let emailInput = type === 'login' ? document.getElementById('login-email') : document.getElementById('reg-email');
+            let passInput = type === 'login' ? document.getElementById('login-pass') : document.getElementById('reg-pass');
+            
+            if(!emailInput.value || !passInput.value) {
+                return alert("Sys_Warning: Fill all required fields.");
+            }
+
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('logged-in-view').style.display = 'block';
+            
+            emailInput.value = ''; passInput.value = '';
+        }
+
+        function logout() {
+            document.getElementById('logged-in-view').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+            isLogin = true;
         }
     </script>
 </body>
-</html>
+    </html>
