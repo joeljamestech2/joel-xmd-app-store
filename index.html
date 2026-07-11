@@ -34,11 +34,66 @@
             color: var(--text-main); 
             padding-bottom: 80px; 
             overflow-x: hidden; 
+            width: 100%;
+            max-width: 100vw;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+
+        /* Authentication Guard */
+        .auth-guard { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+            background: linear-gradient(135deg, rgba(10, 14, 23, 0.98), rgba(15, 23, 42, 0.98));
+            display: flex; justify-content: center; align-items: center; 
+            z-index: 2000; padding: 20px;
+        }
+        .auth-guard.hidden { display: none; }
+        
+        .auth-guard-content {
+            text-align: center; max-width: 350px; width: 100%;
+            background: var(--bg-card); border-radius: 20px; padding: 40px 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: slideUp 0.5s ease;
+        }
+
+        .auth-guard-content h1 {
+            font-size: 24px; color: var(--primary-blue); margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .auth-guard-content p {
+            font-size: 13px; color: var(--text-muted); margin-bottom: 30px; line-height: 1.6;
+        }
+
+        .auth-guard-btns {
+            display: flex; gap: 12px; flex-direction: column;
+        }
+
+        .auth-guard-btn {
+            padding: 14px 20px; border-radius: 12px; border: none;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .auth-guard-btn.primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-hover));
+            color: white;
+        }
+
+        .auth-guard-btn.primary:hover {
+            filter: brightness(1.1); box-shadow: var(--glow-shadow);
+        }
+
+        .auth-guard-btn.secondary {
+            background: var(--bg-input); color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .auth-guard-btn.secondary:hover {
+            background: #232d45; color: white; border-color: var(--primary-blue);
+        }
 
         header { 
             position: sticky; top: 0; z-index: 50; 
@@ -46,44 +101,93 @@
             background: rgba(10, 14, 23, 0.7); backdrop-filter: blur(12px); 
             -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05);
             margin-bottom: 20px;
+            width: 100%;
+            overflow: hidden;
         }
-        .logo-box { width: 45px; height: 45px; background: linear-gradient(135deg, #ffffff, #e2e8f0); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0f172a; font-weight: 900; font-size: 20px; box-shadow: var(--glow-shadow); }
-        .brand-text { flex-grow: 1; }
+
+        .logo-box { 
+            width: 45px; height: 45px; 
+            background: linear-gradient(135deg, #ffffff, #e2e8f0); 
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; 
+            color: #0f172a; font-weight: 700; font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .brand-text { flex-grow: 1; min-width: 0; }
         .brand-text h1 { font-size: 18px; color: var(--primary-blue); line-height: 1.2; letter-spacing: -0.5px; }
-        .brand-text span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
+        .brand-text span { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; display: block; }
 
         /* Auth Button in Header */
-        .auth-btn-header { background: var(--bg-input); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .auth-btn-header { 
+            background: var(--bg-input); color: var(--text-muted); 
+            border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; 
+            border-radius: 8px; font-size: 12px; font-weight: 600; 
+            cursor: pointer; transition: all 0.2s ease;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            flex-shrink: 0; max-width: 140px;
+        }
+
         .auth-btn-header:hover { background: #232d45; color: white; border-color: var(--primary-blue); }
         .auth-btn-header.logged-in { color: var(--accent-green); border-color: rgba(16, 185, 129, 0.3); background: rgba(16, 185, 129, 0.05); }
 
-        .search-container { padding: 0 20px; margin-bottom: 20px; position: relative; }
+        .search-container { 
+            padding: 0 20px; margin-bottom: 20px; position: relative;
+            width: 100%;
+        }
+
         .search-bar { 
             width: 100%; background: var(--bg-input); border: 1px solid var(--border-color); 
             padding: 14px 15px 14px 45px; border-radius: 12px; color: white; font-size: 14px; 
             outline: none; transition: all 0.3s ease;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E"); 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.397h-.001c.003.004.009.013.018.027l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85-.015-.017a6.471 6.471 0 0 0 1.396-1.397zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
             background-repeat: no-repeat; background-position: 15px center; 
         }
-        .search-bar:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); background-color: #151b2b; }
+
+        .search-bar:focus { 
+            border-color: var(--primary-blue); 
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2); 
+            background-color: #151b2b; 
+        }
         
-        .categories { display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 20px 20px; scrollbar-width: none; }
+        .categories { 
+            display: flex; overflow-x: auto; gap: 12px; padding: 0 20px 20px 20px; 
+            scrollbar-width: none; width: 100%;
+            -webkit-overflow-scrolling: touch;
+        }
+
         .categories::-webkit-scrollbar { display: none; }
+
         .cat-pill { 
             background: var(--bg-input); color: var(--text-muted); padding: 8px 18px; 
             border-radius: 20px; font-size: 13px; font-weight: 600; white-space: nowrap; 
-            cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease; 
+            cursor: pointer; border: 1px solid transparent; transition: all 0.2s ease;
+            flex-shrink: 0;
         }
+
         .cat-pill:hover { background: #232d45; transform: translateY(-2px); color: white; }
         .cat-pill:active { transform: translateY(0); }
         .cat-pill.active { background: var(--primary-blue); color: white; }
 
-        .section-title { padding: 0 20px 15px 20px; font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;}
+        .section-title { 
+            padding: 0 20px 15px 20px; font-size: 14px; color: var(--text-muted); 
+            text-transform: uppercase; letter-spacing: 1px; 
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%;
+        }
 
         /* Responsive Grid System */
-        .app-grid { display: grid; grid-template-columns: 1fr; gap: 16px; padding: 0 20px; }
-        @media (min-width: 600px) { .app-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (min-width: 1024px) { .app-grid { grid-template-columns: repeat(3, 1fr); } }
+        .app-grid { 
+            display: grid; grid-template-columns: 1fr; gap: 16px; padding: 0 20px;
+            width: 100%;
+        }
+
+        @media (min-width: 600px) { 
+            .app-grid { grid-template-columns: repeat(2, 1fr); } 
+        }
+
+        @media (min-width: 1024px) { 
+            .app-grid { grid-template-columns: repeat(3, 1fr); } 
+        }
 
         /* Phone-optimized Horizontal Cards */
         .app-card { 
@@ -91,44 +195,110 @@
             position: relative; border: 1px solid rgba(255,255,255,0.05); display: flex; 
             align-items: center; gap: 15px; cursor: pointer; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
         }
+
         .app-card:hover {
             transform: translateY(-3px); border-color: rgba(59, 130, 246, 0.4);
             box-shadow: 0 10px 25px rgba(0,0,0,0.5), 0 0 20px rgba(59,130,246,0.1);
         }
-        .price-badge { position: absolute; top: 0; right: 0; background: rgba(16, 185, 129, 0.15); color: var(--accent-green); padding: 4px 10px; border-top-right-radius: 16px; border-bottom-left-radius: 12px; font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+
+        .price-badge { 
+            position: absolute; top: 0; right: 0; 
+            background: rgba(16, 185, 129, 0.15); color: var(--accent-green); 
+            padding: 4px 10px; border-top-right-radius: 16px; 
+            border-bottom-left-radius: 8px; font-size: 10px; font-weight: 700;
+        }
         
-        .app-icon { width: 55px; height: 55px; border-radius: 12px; background: #fff; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.3); flex-shrink: 0;}
+        .app-icon { 
+            width: 55px; height: 55px; border-radius: 12px; 
+            background: #fff; object-fit: cover; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+            flex-shrink: 0;
+        }
+
         .app-info { flex-grow: 1; min-width: 0; }
-        .app-title { font-size: 14px; font-weight: 700; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
-        .app-author { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .app-category { font-size: 10px; color: var(--primary-blue); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;}
+        .app-title { 
+            font-size: 14px; font-weight: 700; margin-bottom: 2px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            color: #fff; 
+        }
+
+        .app-author { 
+            font-size: 11px; color: var(--text-muted); margin-bottom: 4px; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+        }
+
+        .app-category { 
+            font-size: 10px; color: var(--primary-blue); 
+            text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;
+        }
         
-        .card-actions { display: flex; gap: 8px; flex-shrink: 0;}
+        .card-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
         .btn-get { 
             background: linear-gradient(135deg, var(--primary-blue), var(--primary-hover)); 
-            color: white; border: none; padding: 8px 16px; border-radius: 10px; font-size: 12px; 
-            font-weight: 700; cursor: pointer; transition: all 0.2s ease; 
+            color: white; border: none; padding: 8px 16px; border-radius: 10px; 
+            font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; 
             text-transform: uppercase; letter-spacing: 1px; min-width: 65px;
+            white-space: nowrap;
         }
-        .btn-get:hover:not(:disabled) { box-shadow: var(--glow-shadow); filter: brightness(1.1); }
-        .btn-get:active:not(:disabled) { transform: scale(0.96); }
-        .btn-get:disabled { opacity: 0.6; cursor: not-allowed; background: var(--bg-input); color: var(--text-muted); }
-        .btn-share { width: 40px; background: var(--bg-input); border: none; border-radius: 10px; color: white; cursor: pointer; transition: all 0.2s; }
+
+        .btn-get:hover:not(:disabled) { 
+            box-shadow: var(--glow-shadow); 
+            filter: brightness(1.1); 
+        }
+
+        .btn-get:active:not(:disabled) { 
+            transform: scale(0.96); 
+        }
+
+        .btn-get:disabled { 
+            opacity: 0.6; 
+            cursor: not-allowed; 
+            background: var(--bg-input); 
+            color: var(--text-muted); 
+        }
+
+        .btn-share { 
+            width: 40px; height: 40px; 
+            background: var(--bg-input); 
+            border: none; border-radius: 10px; 
+            color: white; cursor: pointer; 
+            transition: all 0.2s; 
+            flex-shrink: 0;
+        }
+
         .btn-share:hover { background: #2a344a; }
 
-        .status-msg { text-align: center; padding: 40px 20px; color: var(--primary-blue); font-size: 14px; animation: fadeIn 0.5s ease; font-weight: 600; letter-spacing: 1px;}
+        .status-msg { 
+            text-align: center; padding: 40px 20px; 
+            color: var(--primary-blue); font-size: 14px; 
+            animation: fadeIn 0.5s ease; font-weight: 600; 
+            letter-spacing: 1px;
+        }
+
         .error-msg { color: var(--accent-red); }
-        .offline-banner { background: rgba(239, 68, 68, 0.1); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; margin: 0 20px 20px 20px; border-radius: 10px; font-size: 12px; text-align: center; font-weight: bold; display: none; }
+
+        .offline-banner { 
+            background: rgba(239, 68, 68, 0.1); color: var(--accent-red); 
+            border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; 
+            margin: 0 20px 20px 20px; border-radius: 10px; 
+            font-size: 12px; display: none; text-align: center;
+        }
 
         /* Modals */
         .modal-overlay { 
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
             display: none; justify-content: center; align-items: flex-end; 
             z-index: 1000; padding: 15px; animation: fadeIn 0.3s ease; 
         }
-        @media (min-width: 600px) { .modal-overlay { align-items: center; } } 
+
+        @media (min-width: 600px) { 
+            .modal-overlay { align-items: center; } 
+        }
         
         .modal-content { 
             background: var(--bg-dark); width: 100%; max-width: 450px; 
@@ -138,52 +308,192 @@
             animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
         }
         
-        .close-btn { position: absolute; top: 15px; right: 20px; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 14px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; z-index: 10;}
-        .close-btn:hover { background: rgba(255,255,255,0.2); transform: rotate(90deg); }
+        .close-btn { 
+            position: absolute; top: 15px; right: 20px; 
+            background: rgba(255,255,255,0.1); border: none; 
+            color: white; width: 30px; height: 30px; border-radius: 50%; 
+            font-size: 14px; cursor: pointer; 
+            transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;
+        }
+
+        .close-btn:hover { 
+            background: rgba(255,255,255,0.2); 
+            transform: rotate(90deg); 
+        }
         
         /* App Modal Specifics */
         .modal-header { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
-        .modal-icon { width: 85px; height: 85px; border-radius: 20px; background: #fff; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.2);}
-        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; word-break: break-word; line-height: 1.3;}
-        .modal-author { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
-        .modal-cat { background: rgba(59, 130, 246, 0.15); color: var(--primary-blue); padding: 4px 10px; border-radius: 6px; font-size: 11px; display: inline-block; font-weight: 600; letter-spacing: 1px;}
-        .modal-desc { font-size: 13px; line-height: 1.6; color: #cbd5e1; margin: 25px 0; background: var(--bg-input); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);}
+        .modal-icon { 
+            width: 85px; height: 85px; border-radius: 20px; 
+            background: #fff; object-fit: cover; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+            flex-shrink: 0;
+        }
+
+        .modal-title { 
+            font-size: 18px; font-weight: 700; margin-bottom: 6px; 
+            word-break: break-word; line-height: 1.3;
+        }
+
+        .modal-author { 
+            font-size: 12px; color: var(--text-muted); 
+            margin-bottom: 10px; 
+        }
+
+        .modal-cat { 
+            background: rgba(59, 130, 246, 0.15); 
+            color: var(--primary-blue); 
+            padding: 4px 10px; border-radius: 6px; 
+            font-size: 11px; display: inline-block; 
+            font-weight: 600; letter-spacing: 0.5px;
+        }
+
+        .modal-desc { 
+            font-size: 13px; line-height: 1.6; color: #cbd5e1; 
+            margin: 25px 0; background: var(--bg-input); 
+            padding: 15px; border-radius: 12px; 
+            border: 1px solid rgba(255,255,255,0.03);
+        }
         
-        .app-stats { display: flex; align-items: center; justify-content: space-between; font-size: 12px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05);}
-        .stars { color: var(--accent-yellow); letter-spacing: 2px;}
+        .app-stats { 
+            display: flex; align-items: center; justify-content: space-between; 
+            font-size: 12px; margin-bottom: 25px; 
+            padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stars { color: var(--accent-yellow); letter-spacing: 2px; }
 
         /* Reviews */
-        .reviews-section h3 { font-size: 14px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);}
-        .review-form { background: var(--bg-card); padding: 15px; border-radius: 16px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.03); }
-        .review-form input, .review-form textarea { width: 100%; background: var(--bg-dark); border: 1px solid var(--bg-input); padding: 12px; border-radius: 10px; color: white; margin-bottom: 12px; font-size: 13px; transition: 0.3s; }
-        .review-form input:focus, .review-form textarea:focus { border-color: var(--primary-blue); outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+        .reviews-section h3 { 
+            font-size: 14px; margin-bottom: 15px; display: flex; 
+            align-items: center; gap: 8px; text-transform: uppercase; 
+            letter-spacing: 1px; color: var(--text-muted);
+        }
+
+        .review-form { 
+            background: var(--bg-card); padding: 15px; 
+            border-radius: 16px; margin-bottom: 25px; 
+            border: 1px solid rgba(255,255,255,0.03); 
+        }
+
+        .review-form input, .review-form textarea { 
+            width: 100%; background: var(--bg-dark); 
+            border: 1px solid var(--bg-input); padding: 12px; 
+            border-radius: 10px; color: white; margin-bottom: 12px; 
+            font-size: 13px;
+        }
+
+        .review-form input:focus, .review-form textarea:focus { 
+            border-color: var(--primary-blue); 
+            outline: none; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); 
+        }
+
         .review-form textarea { resize: none; height: 80px; }
-        .review-item { padding: 15px 0; border-bottom: 1px dashed var(--bg-input); animation: fadeIn 0.4s ease;}
-        .review-user { font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; color: #fff;}
-        .review-date { color: var(--text-muted); font-size: 11px; font-weight: normal;}
-        .review-text { font-size: 13px; color: var(--text-muted); margin-top: 8px; line-height: 1.5;}
+
+        .review-item { 
+            padding: 15px 0; border-bottom: 1px dashed var(--bg-input); 
+            animation: fadeIn 0.4s ease;
+        }
+
+        .review-user { 
+            font-size: 13px; font-weight: 700; 
+            display: flex; justify-content: space-between; 
+            color: #fff;
+        }
+
+        .review-date { 
+            color: var(--text-muted); 
+            font-size: 11px; font-weight: normal;
+        }
+
+        .review-text { 
+            font-size: 13px; color: var(--text-muted); 
+            margin-top: 8px; line-height: 1.5;
+        }
 
         /* Auth Form Specifics */
         .auth-header-text { text-align: center; margin-bottom: 25px; }
         .auth-header-text h2 { font-size: 20px; color: var(--primary-blue); margin-bottom: 5px; }
         .auth-header-text p { font-size: 12px; color: var(--text-muted); }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-        .form-group input { width: 100%; background: var(--bg-input); border: 1px solid transparent; padding: 14px; border-radius: 12px; color: white; font-size: 14px; transition: 0.3s; }
-        .form-group input:focus { border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); outline: none;}
-        .btn-submit { width: 100%; background: linear-gradient(135deg, var(--primary-blue), var(--primary-hover)); color: white; border: none; padding: 14px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
-        .btn-submit:hover { filter: brightness(1.1); box-shadow: var(--glow-shadow); }
-        .auth-switch { text-align: center; margin-top: 25px; font-size: 13px; color: var(--text-muted); }
-        .auth-switch span { color: var(--primary-blue); cursor: pointer; font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
 
-        .footer-links { padding: 20px; display: flex; flex-direction: column; gap: 15px; margin-top: 20px;}
-        .copyright { text-align: center; color: var(--text-muted); font-size: 11px; letter-spacing: 1px; }
-        .copyright span { color: var(--primary-blue); font-weight: 700;}
+        .form-group { margin-bottom: 20px; }
+        .form-group label { 
+            display: block; font-size: 12px; color: var(--text-muted); 
+            margin-bottom: 8px; text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+
+        .form-group input { 
+            width: 100%; background: var(--bg-input); border: 1px solid transparent; 
+            padding: 14px; border-radius: 12px; color: white; font-size: 14px; 
+            transition: 0.3s; 
+        }
+
+        .form-group input:focus { 
+            border-color: var(--primary-blue); 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); 
+            outline: none;
+        }
+
+        .btn-submit { 
+            width: 100%; background: linear-gradient(135deg, var(--primary-blue), var(--primary-hover)); 
+            color: white; border: none; padding: 14px; 
+            border-radius: 12px; font-size: 14px; 
+            font-weight: 700; cursor: pointer; transition: all 0.2s ease;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .btn-submit:hover { 
+            filter: brightness(1.1); 
+            box-shadow: var(--glow-shadow); 
+        }
+
+        .auth-switch { 
+            text-align: center; margin-top: 25px; 
+            font-size: 13px; color: var(--text-muted); 
+        }
+
+        .auth-switch span { 
+            color: var(--primary-blue); cursor: pointer; 
+            font-weight: 700; text-decoration: underline; 
+            text-underline-offset: 4px; 
+        }
+
+        .footer-links { 
+            padding: 20px; display: flex; flex-direction: column; 
+            gap: 15px; margin-top: 20px; width: 100%;
+        }
+
+        .copyright { 
+            text-align: center; color: var(--text-muted); 
+            font-size: 11px; letter-spacing: 1px; 
+        }
+
+        .copyright span { color: var(--primary-blue); font-weight: 700; }
+
+        /* Hide store when not authenticated */
+        #store-view.locked {
+            opacity: 0.5;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
-    <div id="store-view">
+    <!-- Authentication Guard Overlay -->
+    <div id="auth-guard" class="auth-guard">
+        <div class="auth-guard-content">
+            <h1>Welcome</h1>
+            <p>Sign in or create an account to access TechStore and download apps.</p>
+            <div class="auth-guard-btns">
+                <button class="auth-guard-btn primary" onclick="openAuthGuardModal('login')">> LOGIN</button>
+                <button class="auth-guard-btn secondary" onclick="openAuthGuardModal('register')">> REGISTER</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="store-view" class="locked">
         <header>
             <div class="logo-box">JT</div>
             <div class="brand-text">
@@ -293,7 +603,7 @@
                     <label>> sys_password</label>
                     <input type="password" id="login-pass" placeholder="********">
                 </div>
-                <button class="btn-submit" onclick="processAuth('login')">> LOGIN</button>
+                <button class="btn-submit" onclick="processAuthFromModal('login')">> LOGIN</button>
                 <div class="auth-switch">
                     No access credentials? <span onclick="switchAuthView('register')">Create User</span>
                 </div>
@@ -316,7 +626,7 @@
                     <label>> secure_key (pass)</label>
                     <input type="password" id="reg-pass" placeholder="Min 8 bytes">
                 </div>
-                <button class="btn-submit" onclick="processAuth('register')">> REGISTER</button>
+                <button class="btn-submit" onclick="processAuthFromModal('register')">> REGISTER</button>
                 <div class="auth-switch">
                     Already registered? <span onclick="switchAuthView('login')">Init Session</span>
                 </div>
@@ -341,35 +651,48 @@
         const search = document.getElementById("search");
         const offlineBanner = document.getElementById("offline-banner");
         const sectionTitle = document.getElementById("section-title");
+        const authGuard = document.getElementById("auth-guard");
+        const storeView = document.getElementById("store-view");
         let currentUser = null;
 
         // Initialize App
         window.onload = () => {
             initAuthMemory();
-            loadPopularApps();
             
             // Listen for online/offline changes
             window.addEventListener('online', () => { offlineBanner.style.display = 'none'; });
             window.addEventListener('offline', () => { offlineBanner.style.display = 'block'; });
         };
 
-        // --- 2. Auth Memory System ---
+        // --- 2. Auth Guard & Authentication ---
         function initAuthMemory() {
             currentUser = localStorage.getItem('techstore_user');
-            const authBtn = document.getElementById('auth-header-btn');
             
             if (currentUser) {
-                authBtn.innerHTML = `> ${currentUser}`;
-                authBtn.className = "auth-btn-header logged-in";
-                authBtn.onclick = logoutUser;
-                // Pre-fill reviewer name if logged in
-                document.getElementById('reviewer-name').value = currentUser;
+                // User is logged in - unlock the store
+                unlockStore();
+                updateAuthButton();
             } else {
-                authBtn.innerHTML = `> LOGIN`;
-                authBtn.className = "auth-btn-header";
-                authBtn.onclick = openAuthModal;
-                document.getElementById('reviewer-name').value = '';
+                // User is not logged in - show auth guard
+                lockStore();
             }
+        }
+
+        function lockStore() {
+            authGuard.classList.remove('hidden');
+            storeView.classList.add('locked');
+        }
+
+        function unlockStore() {
+            authGuard.classList.add('hidden');
+            storeView.classList.remove('locked');
+            loadPopularApps();
+        }
+
+        function openAuthGuardModal(view) {
+            document.body.style.overflow = 'hidden';
+            document.getElementById('auth-modal').style.display = 'flex';
+            switchAuthView(view);
         }
 
         function openAuthModal() {
@@ -383,7 +706,7 @@
             document.getElementById('register-view').style.display = view === 'register' ? 'block' : 'none';
         }
 
-        function processAuth(type) {
+        function processAuthFromModal(type) {
             let email = type === 'login' ? document.getElementById('login-email').value : document.getElementById('reg-email').value;
             let pass = type === 'login' ? document.getElementById('login-pass').value : document.getElementById('reg-pass').value;
             let name = type === 'register' ? document.getElementById('reg-user').value : email.split('@')[0];
@@ -398,10 +721,27 @@
             initAuthMemory();
         }
 
+        function updateAuthButton() {
+            const authBtn = document.getElementById('auth-header-btn');
+            if (currentUser) {
+                authBtn.innerHTML = `> ${currentUser}`;
+                authBtn.className = "auth-btn-header logged-in";
+                authBtn.onclick = logoutUser;
+                document.getElementById('reviewer-name').value = currentUser;
+            } else {
+                authBtn.innerHTML = `> LOGIN`;
+                authBtn.className = "auth-btn-header";
+                authBtn.onclick = openAuthModal;
+                document.getElementById('reviewer-name').value = '';
+            }
+        }
+
         function logoutUser() {
             if(confirm("Terminate current session?")) {
                 localStorage.removeItem('techstore_user');
-                initAuthMemory();
+                currentUser = null;
+                lockStore();
+                updateAuthButton();
             }
         }
 
@@ -641,4 +981,4 @@
         }
     </script>
 </body>
-                    </html>
+</html>
